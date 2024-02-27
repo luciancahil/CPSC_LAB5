@@ -45,24 +45,14 @@ put_element:
 #    %rsi: index2
 #
 swap:
-	pushq  %rsi             # Save these too as we'll need them later
-	rrmovq  %rdi, %r11
-	
-	call   get_element      # tmp = heap[index1]
-	rrmovq %rax, %rdx
-	
-	rrmovq %rsi, %rdi       # tmp2 = heap[index2]
-	call   get_element
-
-	popq   %rdi             # heap[index1] = tmp2
-	rrmovq %rax, %rsi
-	call   put_element
-
-	popq   %rdi             # heap[index2] = tmp (yes, %rdi not %rsi)
-	rrmovq %rdx, %rsi
-	call   put_element
-
-	ret
+    irmovq $8, %rax                 # rax = 8
+    mulq %rax, %rsi                 # rsi *= 8
+    mulq %rax, %rdi                 # rdi *= 8
+    mrmovq heap(%rsi), %rdx         # r10 = heap[rsi]
+    mrmovq heap(%rdi), %rcx         # r11 = heap[rdi]
+    rmmovq %rcx, heap(%rsi)         # heap[rsi] = r11 = heap[rsi]
+    rmmovq %rdx, heap(%rdi)         # heap[rdi] = r10 = heap[rsi]
+    ret
 
 #
 # Check_child
@@ -266,7 +256,7 @@ hs_continue:
 #
 .pos 0x1000
 heap:	
-		.quad	0x75656
+	.quad	0x75656
 	.quad	0x3a32
 	.quad	0x49ad9
 	.quad	0xf5339
@@ -301,4 +291,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 1851
+# With Stalling Current: 2505
