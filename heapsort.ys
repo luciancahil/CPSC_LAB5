@@ -46,7 +46,7 @@ put_element:
 #
 swap:
 	pushq  %rsi             # Save these too as we'll need them later
-	pushq  %rdi
+	rrmovq  %rdi, %r11
 	
 	call   get_element      # tmp = heap[index1]
 	rrmovq %rax, %rdx
@@ -301,4 +301,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 2815
+# With Stalling Current: 1851
