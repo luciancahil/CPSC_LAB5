@@ -23,8 +23,9 @@ main:
 #     %rax: the element
 
 get_element:
-    irmovq $8, %rax
-	mulq   %rax, %rdi
+	addq   %rdi, %rdi
+	addq   %rdi, %rdi
+	addq   %rdi, %rdi
 	mrmovq heap(%rdi), %rax
 	ret
 	
@@ -34,8 +35,9 @@ get_element:
 #     %rsi: element
 
 put_element:
-    irmovq $8, %rax
-	mulq   %rax, %rdi
+	addq   %rdi, %rdi
+	addq   %rdi, %rdi
+	addq   %rdi, %rdi
 	rmmovq %rsi, heap(%rdi)
 	ret
 
@@ -117,12 +119,11 @@ check_child_finish:
 #
 heapify_node:
 	pushq  %rbx             # Save %rbx and use it to store index
-		rrmovq %rdi, %rbx
-
 	pushq  %r12
 	pushq  %r13
 	rrmovq %rdi, %r12       # %r12 = highest
 	rrmovq %rsi, %r13       # %r13 = last
+	rrmovq %rdi, %rbx
 
 heapify_loop:
 	rrmovq %rbx, %rdi       # left_child = 2 * index + 1
@@ -318,8 +319,6 @@ bottom:             .quad 0x00000000		# bottom of stack.
 # Then, go through everything. Bit by bit.
 
 #Initall, with stalling, we just end up with 3299 cycles.
-
-# With data forwarding, we have 1711
 
 # End: 
 #    3A 32 
