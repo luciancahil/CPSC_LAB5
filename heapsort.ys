@@ -104,32 +104,29 @@ check_child_output_one:        # return 1
 check_child_finish:
 	popq %rbx
 	ret
-
+	
 #
 # Heapify_node
 #     %rdi: index
 #     %rsi: last
 #
 # Local variables:
-#     %rbx: index
-#     %r12: highest
-#     %r13: last
+#     %r9: index
+#     %r10: highest
+#     %r11: last
 #
 heapify_node:
-	pushq  %rbx             # Save %rbx and use it to store index
-	pushq  %r12
-	pushq  %r13
-	rrmovq %rdi, %r12       # %r12 = highest
-	rrmovq %rsi, %r13       # %r13 = last
-	rrmovq %rdi, %rbx
+	rrmovq %rdi, %r10       # %r10 = highest
+	rrmovq %rsi, %r11       # %r11 = last
+	rrmovq %rdi, %r9
 
 heapify_loop:
-	rrmovq %rbx, %rdi       # left_child = 2 * index + 1
+	rrmovq %r9, %rdi       # left_child = 2 * index + 1
 	addq   %rdi, %rdi
 	irmovq $1,   %r8
 	addq   %r8,  %rdi
-	rrmovq %r12, %rsi
-	rrmovq %r13, %rdx
+	rrmovq %r10, %rsi
+	rrmovq %r11, %rdx
 
 	pushq  %rdi             # save this as we'll need it after the call
 	call   check_child
@@ -137,40 +134,37 @@ heapify_loop:
 	andq   %rax, %rax
 
 	je     heapify_skip1    # highest = left_child (if condition ok)
-	rrmovq %rdi, %r12       
+	rrmovq %rdi, %r10       
 
 heapify_skip1:
-	rrmovq %rbx, %rdi       # right_child = 2 * index + 2
+	rrmovq %r9, %rdi       # right_child = 2 * index + 2
 	addq   %rdi, %rdi
 	irmovq $2,   %r8	
 	addq   %r8,  %rdi
-	rrmovq %r12, %rsi
-	rrmovq %r13, %rdx
+	rrmovq %r10, %rsi
+	rrmovq %r11, %rdx
 
 	pushq  %rdi             # save this as we'll need it after the call
 	call   check_child
 	popq  %rdi
 	andq   %rax, %rax
 	je     heapify_skip2
-	rrmovq %rdi, %r12       # highest = right_child (if condition ok)
+	rrmovq %rdi, %r10       # highest = right_child (if condition ok)
 
 heapify_skip2:
-	rrmovq %r12, %rdi
-	subq   %rbx, %rdi
+	rrmovq %r10, %rdi
+	subq   %r9, %rdi
 	jne     heapify_continue
-	popq   %r13
-	popq   %r12
-	popq   %rbx
 	ret
 
 heapify_continue:
-	rrmovq %r12, %rdi
-	rrmovq %rbx, %rsi
+	rrmovq %r10, %rdi
+	rrmovq %r9, %rsi
 	call   swap
 
-	rrmovq %r12, %rbx
+	rrmovq %r10, %r9
 	jmp    heapify_loop
-
+	
 #
 # Heapify_array
 #     %rdi: last
@@ -308,3 +302,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
+# With Stalling Current: 2855
