@@ -23,9 +23,8 @@ main:
 #     %rax: the element
 
 get_element:
-	addq   %rdi, %rdi
-	addq   %rdi, %rdi
-	addq   %rdi, %rdi
+    irmovq $8, %rax
+	mulq   %rax, %rdi
 	mrmovq heap(%rdi), %rax
 	ret
 	
@@ -35,9 +34,8 @@ get_element:
 #     %rsi: element
 
 put_element:
-	addq   %rdi, %rdi
-	addq   %rdi, %rdi
-	addq   %rdi, %rdi
+    irmovq $8, %rax
+	mulq   %rax, %rdi
 	rmmovq %rsi, heap(%rdi)
 	ret
 
@@ -308,3 +306,5 @@ top:	            .quad 0x00000000		# top of stack.
                     .quad 0x00000000
                     .quad 0x00000000
 bottom:             .quad 0x00000000		# bottom of stack.
+
+# With stalling original: 3303
