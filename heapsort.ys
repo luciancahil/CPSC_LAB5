@@ -308,21 +308,3 @@ top:	            .quad 0x00000000		# top of stack.
                     .quad 0x00000000
                     .quad 0x00000000
 bottom:             .quad 0x00000000		# bottom of stack.
-
-
-# alright. What's the plan.
-
-# first, make a clear list of what happens. What do we start with, what do we end with.
-
-# When changes are made, make sure that the list is still what we need it to be.
-
-# Then, go through everything. Bit by bit.
-
-#Initall, with stalling, we just end up with 3299 cycles.
-
-# End: 
-#    3A 32 
-# 04 9A D9 
-# 07 56 56
-# 0D 90 FF
-# 39 52 0F
