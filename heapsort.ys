@@ -44,12 +44,12 @@ put_element:
 #    %rdi: index1
 #    %rsi: index2
 #
-swap:	pushq  %r12             # Callee save register
+swap:
 	pushq  %rsi             # Save these too as we'll need them later
 	pushq  %rdi
 	
 	call   get_element      # tmp = heap[index1]
-	rrmovq %rax, %r12
+	rrmovq %rax, %rdx
 	
 	rrmovq %rsi, %rdi       # tmp2 = heap[index2]
 	call   get_element
@@ -59,10 +59,9 @@ swap:	pushq  %r12             # Callee save register
 	call   put_element
 
 	popq   %rdi             # heap[index2] = tmp (yes, %rdi not %rsi)
-	rrmovq %r12, %rsi
+	rrmovq %rdx, %rsi
 	call   put_element
 
-	popq %r12
 	ret
 
 #
@@ -302,4 +301,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 2855
+# With Stalling Current: 2815
