@@ -186,24 +186,21 @@ ha_continue:
 #     %rdi: last
 #
 extract_max:
-	pushq  %rbx		# Save %rax before using it for max
-
-        pushq  %rdi             # Save this as we'll need it later
-	xorq   %rdi, %rdi       # max = heap[0]
-	call   get_element
-	rrmovq %rax, %rbx
-
-	mrmovq 0(%rsp), %rdi    # Recover %rdi, but leave it on the stack too.
-	call   get_element
-
-	rrmovq %rax, %rsi       # heap[0] = %rax
-	xorq   %rdi, %rdi
-	call   put_element
-
-	popq   %rdi
-	rrmovq %rdi, %rsi	# %rsi = last - 1
+    irmovq $8, %rdx
+    irmovq $0, %rax
 	irmovq $1, %rcx
+	pushq  %rbx		# Save %rax before using it for max
+	
+	mulq   %rdi, %rdx
+	mrmovq heap(%rax), %rbx
+	mrmovq heap(%rdx), %r8
+	rrmovq %rdi, %rsi	# %rsi = last - 1
 	subq   %rcx, %rsi
+	subq   %rcx, %rsi
+	rmmovq %r8, heap(%rax)
+
+
+
 	xorq   %rdi, %rdi       # %rdi = 0
 	call   heapify_node     # Heapify the root
 
@@ -284,4 +281,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 2395
+# With Stalling Current: 2038
