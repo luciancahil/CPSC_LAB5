@@ -49,35 +49,24 @@ put_element:
 #     %rax: true if child <= last && heap[highest] < heap[child]
 #
 check_child:
-	pushq  %rbx
+    irmovq $8, %rax
+	rrmovq %rdi, %rcx       # if child <= last, we can continue
+	subq   %rdx, %rdi
+	jg     check_child_output_zero
 
-	rrmovq %rdi, %rbx       # if child <= last, we can continue
-	subq   %rdx, %rbx
-	jle     check_child_continue
+	mulq   %rax, %rcx
+	mulq   %rax, %rsi
+	mrmovq heap(%rcx), %rcx
+	mrmovq heap(%rsi), %rax
 
-	xorq %rax, %rax
-	popq %rbx
+	subq   %rax, %rcx      # if heap[child] > heap[highest], return 1
+	jle     check_child_output_zero
+	
+	irmovq $1,   %rax
 	ret
 
-check_child_continue:
-	call get_element       # get heap[child]
-	rrmovq %rax, %rcx
-
-	rrmovq %rsi, %rdi      # get heap[highest]
-	call get_element      
-	rrmovq %rax, %rbx
-
-	subq   %rbx, %rcx      # if heap[child] > heap[highest], return 1
-	jg     check_child_output_one
-	
-	xorq   %rax, %rax      # return 0
-	jmp check_child_finish
-
-check_child_output_one:        # return 1
-	irmovq $1,   %rax
-
-check_child_finish:
-	popq %rbx
+check_child_output_zero:
+	irmovq $0,   %rax      # return 0
 	ret
 	
 #
@@ -196,7 +185,6 @@ extract_max:
 	mrmovq heap(%rdx), %r8
 	rrmovq %rdi, %rsi	# %rsi = last - 1
 	subq   %rcx, %rsi
-	subq   %rcx, %rsi
 	rmmovq %r8, heap(%rax)
 
 
@@ -243,16 +231,21 @@ hs_continue:
 
 #
 # Array to sort
-#
+#61, 50, 48, 89, 34, 26, 51, 84, 94, 81
 .pos 0x1000
 heap:	
-	.quad	0x75656
-	.quad	0x3a32
-	.quad	0x49ad9
-	.quad	0xf5339
-	.quad	0xd90ff
+	.quad	61
+	.quad	50
+	.quad	48
+	.quad	89
+	.quad	34
+	.quad	26
+	.quad	51
+	.quad	84
+	.quad	94
+	.quad	81
 
-size:   .quad 5
+size:   .quad 10
 	
 #
 # Stack (32 thirty-two bit words is more than enough here).
@@ -281,4 +274,5 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 2038
+# With Stalling Current: 1588
+# With New: 6241
