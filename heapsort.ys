@@ -97,11 +97,12 @@ heapify_node:
 
 heapify_loop:
 	rrmovq %r9, %rdi       # left_child = 2 * index + 1
-	addq   %rdi, %rdi
 	irmovq $1,   %r8
-	addq   %r8,  %rdi
 	rrmovq %r10, %rsi
 	rrmovq %r11, %rdx
+	addq   %rdi, %rdi
+	addq   %r8,  %rdi
+
 
 	pushq  %rdi             # save this as we'll need it after the call
 	call   check_child
@@ -113,11 +114,12 @@ heapify_loop:
 
 heapify_skip1:
 	rrmovq %r9, %rdi       # right_child = 2 * index + 2
-	addq   %rdi, %rdi
 	irmovq $2,   %r8	
-	addq   %r8,  %rdi
 	rrmovq %r10, %rsi
 	rrmovq %r11, %rdx
+	addq   %rdi, %rdi
+	addq   %r8,  %rdi
+
 
 	pushq  %rdi             # save this as we'll need it after the call
 	call   check_child
@@ -231,13 +233,12 @@ hs_continue:
 	rrmovq %rbx, %rdi       # max = extract_max(i)
 	call   extract_max
 
+	irmovq $8, %r10
 	rrmovq %rbx, %rsi       # heap[i] = max
-	addq   %rsi, %rsi
-	addq   %rsi, %rsi
-	addq   %rsi, %rsi
-        rmmovq %rax, heap(%rsi)
-
+	mulq   %r10, %rsi
 	irmovq $1, %rdi         # i--
+    rmmovq %rax, heap(%rsi)
+
 	subq   %rdi, %rbx
 	jmp    hs_loop
 	popq   %rbx
@@ -283,4 +284,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 2470
+# With Stalling Current: 2395
