@@ -39,20 +39,6 @@ put_element:
 	rmmovq %rsi, heap(%rdi)
 	ret
 
-#
-# Swap:
-#    %rdi: index1
-#    %rsi: index2
-#
-swap:
-    irmovq $8, %rax                 # rax = 8
-    mulq %rax, %rsi                 # rsi *= 8
-    mulq %rax, %rdi                 # rdi *= 8
-    mrmovq heap(%rsi), %rdx         # r10 = heap[rsi]
-    mrmovq heap(%rdi), %rcx         # r11 = heap[rdi]
-    rmmovq %rcx, heap(%rsi)         # heap[rsi] = r11 = heap[rsi]
-    rmmovq %rdx, heap(%rdi)         # heap[rdi] = r10 = heap[rsi]
-    ret
 
 #
 # Check_child
@@ -147,9 +133,15 @@ heapify_skip2:
 	ret
 
 heapify_continue:
+    irmovq $8, %rax                 # rax = 8
 	rrmovq %r10, %rdi
-	rrmovq %r9, %rsi
-	call   swap
+    mulq %rax, %r9                 # r9 *= 8
+    mulq %rax, %rdi                 # rdi *= 8
+    mrmovq heap(%r9), %rdx         # r10 = heap[r9]
+    mrmovq heap(%rdi), %rcx         # r11 = heap[rdi]
+    rmmovq %rcx, heap(%r9)         # heap[r9] = r11 = heap[r9]
+    rmmovq %rdx, heap(%rdi)         # heap[rdi] = r10 = heap[r9]	
+	
 
 	rrmovq %r10, %r9
 	jmp    heapify_loop
@@ -291,4 +283,4 @@ top:	            .quad 0x00000000		# top of stack.
 bottom:             .quad 0x00000000		# bottom of stack.
 
 # With stalling original: 3303
-# With Stalling Current: 2505
+# With Stalling Current: 2470
